@@ -62,39 +62,39 @@ document.querySelectorAll("img").forEach((img) => {
 });
 
 // Form Validation
-const bookingForm = document.querySelector(".book .row form");
-if (bookingForm) {
-  bookingForm.addEventListener("submit", function (e) {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", function () {
+  const bookingForm = document.querySelector(".book .row form");
+  if (bookingForm) {
+    bookingForm.addEventListener("submit", function (e) {
+      e.preventDefault();
 
-    const name = this.querySelector('input[name="name"]').value;
-    const email = this.querySelector('input[name="email"]').value;
-    const phone = this.querySelector('input[name="phone"]').value;
-    const date = this.querySelector('input[name="date"]').value;
+      const name = this.querySelector('input[name="name"]').value;
+      const email = this.querySelector('input[name="email"]').value;
+      const phone = this.querySelector('input[name="phone"]').value;
+      const department = this.querySelector('select[name="department"]').value;
+      const date = this.querySelector('input[name="date"]').value;
 
-    if (!name || !email || !phone || !date) {
-      showMessage("Please fill in all fields", "error");
-      return;
-    }
+      if (!name || !email || !phone || !department || !date) {
+        showAlert("الرجاء ملء جميع الحقول", "error");
+        return;
+      }
 
-    if (!isValidEmail(email)) {
-      showMessage("Please enter a valid email address", "error");
-      return;
-    }
+      if (!isValidEmail(email)) {
+        showAlert("الرجاء إدخال بريد إلكتروني صحيح", "error");
+        return;
+      }
 
-    if (!isValidPhone(phone)) {
-      showMessage("Please enter a valid phone number", "error");
-      return;
-    }
+      if (!isValidPhone(phone)) {
+        showAlert("الرجاء إدخال رقم هاتف صحيح", "error");
+        return;
+      }
 
-    // Show success message
-    showMessage(
-      "Booking submitted successfully! We will contact you soon.",
-      "success"
-    );
-    this.reset();
-  });
-}
+      // Show success alert
+      showAlert("تم الحجز بنجاح! سنتواصل معك قريباً", "success");
+      this.reset();
+    });
+  }
+});
 
 // Helper Functions
 function isValidEmail(email) {
@@ -105,12 +105,16 @@ function isValidPhone(phone) {
   return /^\+?[\d\s-]{10,}$/.test(phone);
 }
 
-// Show Message Function
-function showMessage(message, type) {
-  // Create message element
-  const messageDiv = document.createElement("div");
-  messageDiv.className = `message ${type}`;
-  messageDiv.innerHTML = `
+// Show Alert Function
+function showAlert(message, type) {
+  // Remove any existing alerts
+  const existingAlerts = document.querySelectorAll(".alert");
+  existingAlerts.forEach((alert) => alert.remove());
+
+  // Create alert element
+  const alertDiv = document.createElement("div");
+  alertDiv.className = `alert alert-${type}`;
+  alertDiv.innerHTML = `
     <i class="fas ${
       type === "success" ? "fa-check-circle" : "fa-exclamation-circle"
     }"></i>
@@ -118,14 +122,14 @@ function showMessage(message, type) {
   `;
 
   // Add to page
-  document.body.appendChild(messageDiv);
+  document.body.appendChild(alertDiv);
 
   // Remove after 3 seconds
   setTimeout(() => {
-    messageDiv.classList.add("fade-out");
+    alertDiv.classList.add("fade-out");
     setTimeout(() => {
-      messageDiv.remove();
-    }, 300);
+      alertDiv.remove();
+    }, 500);
   }, 3000);
 }
 
@@ -169,4 +173,14 @@ const counterObserver = new IntersectionObserver(observerCallback, {
 counters.forEach((counter) => {
   counter.innerText = "0+";
   counterObserver.observe(counter);
+});
+
+// Scroll to Top Button
+const scrollTop = document.querySelector(".scroll-top");
+window.addEventListener("scroll", () => {
+  if (window.pageYOffset > 100) {
+    scrollTop.classList.add("active");
+  } else {
+    scrollTop.classList.remove("active");
+  }
 });
